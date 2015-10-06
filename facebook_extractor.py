@@ -82,7 +82,7 @@ class FacebookFindOwner():
 
 
 class FacebookGrabInfo(commands.Command):
-    """Carves the memory dump for a JSON struct containing Owner's personal info."""
+    """Carves the memory dump for Owner's personal info JSON struct."""
 
     def __init__(self, config, *args, **kwargs):
         commands.Command.__init__(self, config, *args, **kwargs)
@@ -117,7 +117,7 @@ class FacebookGrabInfo(commands.Command):
                 return "iderr"
         elif self._config.OID is not None:
             ownerID = self._config.OID
-        
+
         scanner = FacebookScanner(needles=[start_tag])
         for offset in scanner.scan(address_space):
             fb_buff = address_space.read(offset+len(start_tag)-len(id_tag), 4096)
@@ -125,7 +125,7 @@ class FacebookGrabInfo(commands.Command):
             jsonOwnerID = fb_buff[len(id_tag):len(id_tag)+idoffset]
             
             if ownerID != jsonOwnerID:
-                # Found JSON structure from different account, 
+                # Found JSON structure from different account,
                 # so just continue looking
                 continue
 
@@ -133,7 +133,7 @@ class FacebookGrabInfo(commands.Command):
             while iter1 < len(fb_buff):
                 if fb_buff[iter1:iter1+len(stop_tag1)] == stop_tag1 or \
                    fb_buff[iter1:iter1+len(stop_tag2)] == stop_tag2:
-                    # Use a generic exception handler, because of 
+                    # Use a generic exception handler, because of
                     # random JSON looking artifacts or corrupted ones
                     try:
                         tmpJsonDes = json.loads(fb_buff[:iter1+len(stop_tag1)])
@@ -297,7 +297,6 @@ class FacebookMessages(commands.Command):
                           action='store_true', dest='duplicates',
                           help='Do not display duplicate messages')
 
-
         config.add_option('BUFFER', short_option='b',
                           default=1024, type='int',
                           help='Look up chunk size for messages')
@@ -337,13 +336,12 @@ class FacebookMessages(commands.Command):
         scanner = FacebookScanner(needles=[fbchat_start_tag])
         # Begin looking for possible messages
         for offset in scanner.scan(address_space):
-            # Special case which could happen if needles are 
+            # Special case which could happen if needles are
             # found in the very beginning of memory dump
             if offset < self._config.BUFFER:
                 fb_buff = address_space.read(0+len(fbchat_start_tag), offset)
             else:
                 fb_buff = address_space.read(offset+len(fbchat_start_tag), self._config.BUFFER)
-            
             # Build 2 timestamp lowyear and highyear variables
             # for later usage
             lowdt = datetime(int(self._config.LOWYEAR), 1, 1)
@@ -411,14 +409,14 @@ class FacebookMessages(commands.Command):
             if not flag3found:
                 continue
 
-            # Only if dupes argument is strictly enabled, then avoid 
+            # Only if dupes argument is strictly enabled, then avoid
             # displaying duplicate messages!
             if self._config.duplicates:
                 # Calculate the SHA1 of message and if it
                 # has been already found DO NOT yield it
                 msgSHA1 = sha1(fb_buff[iter1:iter2]).hexdigest()
                 # If this message is already stored, keep looking
-                if msgSHA1 in foundItemsHashes: 
+                if msgSHA1 in foundItemsHashes:
                     continue
                 else:
                     foundItemsHashes.append(msgSHA1)
@@ -436,7 +434,7 @@ class FacebookMessages(commands.Command):
     def render_text(self, outfd, data):
         # Leaving the Message column without size specified,
         # will allow Volatility to render it properly
-        # by finding the max Message record size 
+        # by finding the max Message record size
         self.table_header(outfd, [("User Name", "40"),
                                   ("Timestamp", "28"),
                                   ("Message", "")])
