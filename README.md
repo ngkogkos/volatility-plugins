@@ -22,3 +22,5 @@ Example:
 ## Notes
 
 - The oid argument is not necessary because the plugin should find the owner's ID automatically. However, there is a possibility that 2 different users logged in their account prior to capturing the RAM dump. Hence, the code won't decide for the correct ID but let you know about that and then you would have to supply it with the --oid parameter.
+
+Special Thanks to ![@attrc](https://twitter.com/attrc), ![@gleeda](https://twitter.com/gleeda) and ![@superponible](https://twitter.com/superponible)
