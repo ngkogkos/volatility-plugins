@@ -1,5 +1,5 @@
 """
-@author:       Nick Gk (@f1ndm3h)
+@author:       Nick Gk (@ngkogkos)
 @license:      The MIT License (MIT)
 @contact:      ngkogkos@protonmail.com
 """
@@ -123,7 +123,7 @@ class FacebookGrabInfo(commands.Command):
             fb_buff = address_space.read(offset+len(start_tag)-len(id_tag), 4096)
             idoffset = fb_buff[len(id_tag):].find("\"")
             jsonOwnerID = fb_buff[len(id_tag):len(id_tag)+idoffset]
-            
+
             if ownerID != jsonOwnerID:
                 # Found JSON structure from different account,
                 # so just continue looking
@@ -173,7 +173,7 @@ class FacebookGrabInfo(commands.Command):
 
 class FacebookContacts(commands.Command):
     """Finds possible Facebook contacts"""
-    
+
     def __init__(self, config, *args, **kwargs):
         commands.Command.__init__(self, config, *args, **kwargs)
 
@@ -238,7 +238,7 @@ class FacebookContacts(commands.Command):
                         contactOwnerID = contactData.get("user_key").split(":")[1] + " [OWNER]"
                     else:
                         contactOwnerID = contactData.get("user_key").split(":")[1]
-                    
+
                     contact = (contactOwnerID,
                                contactData.get("email"),
                                contactData.get("name"))
