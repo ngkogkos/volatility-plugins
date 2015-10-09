@@ -439,9 +439,6 @@ class FacebookMessages(commands.Command):
                                   ("Timestamp", "28"),
                                   ("Message", "")])
 
-        if data is None:
-            return
-
         for un, t, m in data:
             try:
                 self.table_row(outfd, un, t, m)
