@@ -3,7 +3,7 @@ Plugins for the Volatility framework
 
 # facebook_extractor
 ## Setup
-Simply clone the repository locally and copy the facebook_extractor.py inside the "/volatility/volatility/plugins/" path.
+Simply clone the repository locally and copy the facebook_extractor.py inside the "/volatility/volatility/plugins/" path. Otherwise use Volatility's --plugins argument to specify its directory.
 
 ## Usage
 The facebook_extractor.py contains 3 Volatility plugins:
