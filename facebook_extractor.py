@@ -10,7 +10,7 @@ import volatility.scan as scan
 import volatility.utils as utils
 import volatility.addrspace as addrspace
 import volatility.obj as obj
-from volatility.renderers.html import HTMLRenderer, JSONRenderer
+from volatility.renderers import TreeGrid
 
 # Auxiliary modules
 from hashlib import sha1
@@ -21,7 +21,6 @@ import struct
 
 # TO-DO:
 #
-
 
 def isprintable(s, codec='utf8'):
     """Checks where a character is Printable or not."""
@@ -247,16 +246,33 @@ class FacebookContacts(commands.Command):
             except Exception as e:
                 continue
 
+    def unified_output(self, data):
+        return TreeGrid([("Facebook ID", str),
+                         ("Email Address", str),
+                         ("Full Name", str)],
+                         self.generator(data))   
+
+    def generator(self, data):
+        for uk, e, n in data:
+            try:
+                yield(0, 
+                     [str(uk),
+                      str(e),
+                      str(n)])
+            except Exception as e:
+                print "[ERROR] Something went bad: Facebook ID: " + uk + ", Email Address: " + e + ", Full Name: " + n        
+        
+
     def render_text(self, outfd, data):
-        self.table_header(outfd, [("User Key", "30"),
-                                  ("Email", "50"),
-                                  ("Name", "")])
+        self.table_header(outfd, [("Facebook ID", "30"),
+                                  ("Email Address", "50"),
+                                  ("Full Name", "")])
 
         for uk, e, n in data:
             try:
                 self.table_row(outfd, uk, e, n)
             except Exception as e:
-                print "[ERROR] Something went bad: User Key: " + uk + ", Email: " + e + ", Name: " + n
+                print "[ERROR] Something went bad: Facebook ID: " + uk + ", Email Address: " + e + ", Full Name: " + n
 
     def render_csv(self, outfd, data):
         for uk, e, n in data:
@@ -431,6 +447,23 @@ class FacebookMessages(commands.Command):
             if dt is not None:
                 yield msgsDict[k][0], dt, msgsDict[k][1]
 
+    def unified_output(self, data):
+        return TreeGrid([("User Name", str),
+                         ("Timestamp", str),
+                         ("Message", str)],
+                         self.generator(data))
+
+    def generator(self, data):
+        for un, t, m in data:
+            try:
+                yield(0, 
+                     [str(un),
+                      str(t),
+                      str(m)])
+            
+            except Exception as e:
+                print "[ERROR] Something went bad: User Name: " + un + ", Timestamp: " + t + ", Message: " + m
+
     def render_text(self, outfd, data):
         # Leaving the Message column without size specified,
         # will allow Volatility to render it properly
@@ -446,5 +479,6 @@ class FacebookMessages(commands.Command):
                 print "[ERROR] Something went bad: User Name: " + un + ", Timestamp: " + t + ", Message: " + m
 
     def render_csv(self, outfd, data):
+        outfd.write()
         for un, t, m in data:
             outfd.write("{0},{1},{2}\n".format(un, t, m))
